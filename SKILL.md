@@ -2,6 +2,15 @@
 
 Extract and save browser state (cookies + localStorage) from a live Playwright MCP browser session.
 
+## Architecture
+
+This skill bridges browser and Node.js contexts:
+
+1. **Browser**: `browser_run_code` executes generated code → returns state as JSON string
+2. **Node.js**: `extract-cookies.js --save` receives JSON → writes to file
+
+> **Warning**: Do NOT use `require()`, `fs`, or file paths inside `browser_run_code` - it runs in browser context, not Node.js. The extraction code uses only browser APIs (`page.context().storageState()`).
+
 ## Usage
 
 When the user wants to save the current browser's login state:
